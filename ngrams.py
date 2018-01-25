@@ -13,9 +13,14 @@ You are free to use this code under the MIT licencse:
 http://www.opensource.org/licenses/mit-license.php
 """
 
+# TODO: include timing function
+
+import sys
+import doctest
 import re, string, random, glob, operator, heapq
 from collections import defaultdict
 from math import log10
+from datetime import datetime
 from functools import reduce
 
 def memo(f):
@@ -28,10 +33,9 @@ def memo(f):
     fmemo.memo = table
     return fmemo
 
-def test(verbose=None):
+def test(verbose=False):
     """Run some tests, taken from the chapter.
     Since the hillclimbing algorithm is randomized, some tests may fail."""
-    import doctest
     print('Running tests...')
     doctest.testfile('ngrams-test.txt', verbose=verbose)
 
@@ -88,6 +92,7 @@ N = 1024908267229 ## Number of tokens
 
 Pw  = Pdist(datafile('count_1w.txt'), N, avoid_long_words)
 
+
 #### segment2: second version, with bigram counts, (p. 226-227)
 
 def cPw(word, prev):
@@ -107,8 +112,10 @@ def segment2(text, prev='<S>'):
                   for first,rem in splits(text)] 
     return max(candidates) 
 
-def combine(Pfirst, first, *rems):
-    """Combine first and rem results into one (probability, words) pair.""" 
+def combine(Pfirst, first, rems):
+    """Combine first and rem results into one (probability, words) pair."""
+    # with open('err.log', 'a') as f:
+    #     print(Pfirst, first, type(rems), rems[0], '**bug**', file=f)
     return Pfirst + rems[0], [first] + rems[1]
 
 ################ Secret Codes (p. 228-230)
@@ -171,7 +178,7 @@ def hillclimb(x, f, neighbors, steps=10000):
     fx = f(x) 
     neighborhood = iter(neighbors(x)) 
     for i in range(steps): 
-        x2 = neighborhood.next() 
+        x2 = next(neighborhood)
         fx2 = f(x2) 
         if fx2 > fx: 
             x, fx = x2, fx2 
@@ -200,7 +207,7 @@ cat = ''.join
 
 def neighboring_msgs(msg): 
     """Generate nearby keys, hopefully better ones.""" 
-    def swap(a,b): return msg.translate(string.maketrans(a+b, b+a)) 
+    def swap(a,b): return msg.translate(str.maketrans(a+b, b+a)) 
     for bigram in heapq.nsmallest(20, set(ngrams(msg, 2)), P2l): 
         b1,b2 = bigram 
         for c in alphabet: 
@@ -220,8 +227,8 @@ def corrections(text):
 
 def correct(w): 
     """Return the word that is the most likely spell correction of w.""" 
-    candidates = edits(w).items() 
-    c, edit = max(candidates, key=lambda c, e: Pedit(e) * Pw(c))
+    candidates = edits(w).items()
+    c, edit = max(candidates, key=lambda c_e: Pedit(c_e[1]) * Pw(c_e[0]))
     return c 
 
 def Pedit(edit): 
@@ -265,4 +272,12 @@ def edits(word, d=2):
     editsR('', word, d, []) 
     return results 
 
-PREFIXES = set(w[:i] for w in Pw for i in range(len(w) + 1)) 
+PREFIXES = set(w[:i] for w in Pw for i in range(len(w) + 1))
+
+def timed_test():
+    start_time = datetime.now()
+    test()
+    print('total running time for tests:', datetime.now() - start_time)
+
+if __name__ == "__main__":
+    timed_test()

@@ -77,7 +77,7 @@
 
 >>> for i in range(26):
 ...     msg = shift('Yvfgra, qb lbh jnag gb xabj n frperg?', i)
-...     print msg, int(logPwords(msg))
+...     print(msg, int(logPwords(msg)))
 Yvfgra, qb lbh jnag gb xabj n frperg? -84
 Zwghsb, rc mci kobh hc ybck o gsqfsh? -83
 Axhitc, sd ndj lpci id zcdl p htrgti? -83
@@ -152,8 +152,8 @@ Xuefqz, pa kag imzf fa wzai m eqodqf? -83
 
 ################ Spelling Correction (p. 237)
 
->>> edits('adiabatic', 2)
-{'adiabatic': '', 'diabetic': '<a|<+a|e', 'diabatic': '<a|<'}
+>>> sorted(edits('adiabatic', 2).items())
+[('adiabatic', ''), ('diabatic', '<a|<'), ('diabetic', '<a|<+a|e')]
 
 >>> correct('vokabulary')
 'vocabulary'
