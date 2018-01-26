@@ -121,7 +121,7 @@ def combine(Pfirst, first, rems):
 ################ Secret Codes (p. 228-230)
 
 def encode(msg, key): 
-    """Encode a message with a substitution cipher.""" 
+    """Encode a message with a substitution cipher."""
     return msg.translate(str.maketrans(ul(alphabet), ul(key)))
 
 def ul(text): return text.upper() + text.lower() 
@@ -129,8 +129,8 @@ def ul(text): return text.upper() + text.lower()
 alphabet = 'abcdefghijklmnopqrstuvwxyz' 
 
 def shift(msg, n=13): 
-    """Encode a message with a shift (Caesar) cipher.""" 
-    return encode(msg, alphabet[n:]+alphabet[:n]) 
+    """Encode a message with a shift (Caesar) cipher."""
+    return encode(msg, alphabet[n:]+alphabet[:n])
 
 def logPwords(words): 
     """The Naive Bayes probability of a string or sequence of words.""" 
